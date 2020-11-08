@@ -1,3 +1,4 @@
+import { AuthInterceptor } from "./auth/auth-interceptor";
 import { SignupComponent } from "./auth/signup/signup.component";
 import { LoginComponent } from "./auth/login/login.component";
 import { HeaderComponent } from "./header/header.component";
@@ -19,7 +20,7 @@ import {
 } from "@angular/material";
 import { PostListComponent } from "./posts/post-list/post-list.component";
 import { PostsService } from "./services/posts.service";
-import { HttpClientModule } from "@angular/common/http";
+import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 
 @NgModule({
   declarations: [
@@ -45,7 +46,9 @@ import { HttpClientModule } from "@angular/common/http";
     MatPaginatorModule,
     HttpClientModule,
   ],
-  providers: [PostsService],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
