@@ -30,7 +30,13 @@
         >Please enter a valid password</mat-error
       >
     </mat-form-field>
-    <button type="submit" [disabled]="" color="primary" mat-raised-button>
+    <button
+      type="submit"
+      *ngIf="!loading"
+      [disabled]=""
+      color="primary"
+      mat-raised-button
+    >
       Login
     </button>
   </form>

@@ -9,16 +9,11 @@ import { Router } from "@angular/router";
 })
 export class LoginComponent {
   loading = false;
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService) {}
   onLogin(form: NgForm) {
     if (!form.valid) {
       return;
     }
     this.authService.login(form.value.email, form.value.password);
-    this.authService.getAuthStatusListener().subscribe((isAuthenticated) => {
-      if (isAuthenticated) {
-        this.router.navigate([""]);
-      }
-    });
   }
 }

@@ -10,6 +10,7 @@ export class SignupComponent {
   loading = false;
   constructor(public authService: AuthService) {}
   onSignup(form: NgForm) {
+    this.loading = true;
     if (form.invalid) {
       return;
     }
