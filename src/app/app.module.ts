@@ -1,4 +1,3 @@
-import { AuthModule } from "./auth/auth.module";
 import { PostsModule } from "./posts/posts.module";
 import { AngularMaterialModule } from "./angular-material.module";
 import { ErrorComponent } from "./error.component";
@@ -21,7 +20,6 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
     HttpClientModule,
     AngularMaterialModule,
     PostsModule,
-    AuthModule,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
