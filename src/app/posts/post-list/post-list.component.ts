@@ -13,6 +13,7 @@ import { PageEvent } from "@angular/material";
 export class PostListComponent implements OnInit, OnDestroy {
   private postsChangedSubscription: Subscription;
   private authStatusSubscription: Subscription;
+  userId: string;
   userIsAuthenticated = false;
   posts: Post[] = [];
   totalPosts = 0;
@@ -29,7 +30,7 @@ export class PostListComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.loading = true;
     this.postsService.getPosts(this.postsPerPage, this.currentPage);
-
+    this.userId = this.authService.getUserID();
     this.postsChangedSubscription = this.postsService
       .getPostUpdateListener()
       .subscribe((postdata: { posts: Post[]; postCount: number }) => {
@@ -42,6 +43,7 @@ export class PostListComponent implements OnInit, OnDestroy {
       .getAuthStatusListener()
       .subscribe((isAuthenticated) => {
         this.userIsAuthenticated = isAuthenticated;
+        this.userId = this.authService.getUserID();
       });
   }
   ngOnDestroy() {
