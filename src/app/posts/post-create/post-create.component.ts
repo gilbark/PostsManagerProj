@@ -1,6 +1,8 @@
+import { AuthService } from "./../../auth/auth.service";
+import { Subscription } from "rxjs";
 import { Post } from "../../models/post.model";
 import { PostsService } from "../../services/posts.service";
-import { Component, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute, ParamMap } from "@angular/router";
 import { mimeType } from "./mime-type.validator";
@@ -11,20 +13,27 @@ const modes = { Create: "create", Edit: "edit" };
   templateUrl: "./post-create.component.html",
   styleUrls: ["./post-create.component.css"],
 })
-export class PostCreateComponent implements OnInit {
+export class PostCreateComponent implements OnInit, OnDestroy {
   private mode = modes.Create;
   private postId: string;
   private loading = true;
+  private authStatusSub: Subscription;
   imagePreview: string;
   form: FormGroup;
   post: Post;
 
   constructor(
     private postsService: PostsService,
+    private authService: AuthService,
     public route: ActivatedRoute
   ) {}
 
   ngOnInit() {
+    this.authStatusSub = this.authService
+      .getAuthStatusListener()
+      .subscribe((authStatus) => {
+        this.loading = false;
+      });
     // Create reactive form
     this.form = new FormGroup({
       title: new FormControl(null, {
@@ -38,8 +47,6 @@ export class PostCreateComponent implements OnInit {
         asyncValidators: [mimeType],
       }),
     });
-
-    console.log(this.imagePreview);
 
     this.route.paramMap.subscribe((p: ParamMap) => {
       if (p.has("postId")) {
@@ -97,5 +104,9 @@ export class PostCreateComponent implements OnInit {
       this.imagePreview = <string>reader.result;
     };
     reader.readAsDataURL(file);
+  }
+
+  ngOnDestroy() {
+    this.authStatusSub.unsubscribe();
   }
 }

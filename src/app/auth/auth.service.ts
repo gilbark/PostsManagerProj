@@ -11,8 +11,8 @@ export class AuthService {
   private timer: NodeJS.Timer;
   private token: string;
   private isAuthenticated = false;
-  private authStatusListener = new Subject<boolean>();
   private userId: string;
+  private authStatusListener = new Subject<boolean>();
 
   constructor(private http: HttpClient, private router: Router) {}
 
@@ -32,11 +32,14 @@ export class AuthService {
 
   createUser(email: string, password: string) {
     const authData: AuthData = { email, password };
-    this.http
-      .post("http://localhost:3000/api/user/signup", authData)
-      .subscribe((response) => {
+    this.http.post("http://localhost:3000/api/user/signup", authData).subscribe(
+      (response) => {
         this.router.navigate(["/"]);
-      });
+      },
+      (error) => {
+        this.authStatusListener.next(false);
+      }
+    );
   }
 
   login(email: string, password: string) {
@@ -47,22 +50,27 @@ export class AuthService {
         "http://localhost:3000/api/user/login",
         authData
       )
-      .subscribe((response) => {
-        this.token = response.token;
-        if (this.token) {
-          const expiresInDuration = response.expiresIn;
-          this.setAuthTimer(expiresInDuration);
-          this.isAuthenticated = true;
-          this.authStatusListener.next(true);
-          this.saveAuthData(
-            this.token,
-            new Date(new Date().getTime() + expiresInDuration * 1000),
-            this.userId
-          );
-          this.userId = response.userId;
-          this.router.navigate(["/"]);
+      .subscribe(
+        (response) => {
+          this.token = response.token;
+          if (this.token) {
+            const expiresInDuration = response.expiresIn;
+            this.setAuthTimer(expiresInDuration);
+            this.isAuthenticated = true;
+            this.authStatusListener.next(true);
+            this.saveAuthData(
+              this.token,
+              new Date(new Date().getTime() + expiresInDuration * 1000),
+              this.userId
+            );
+            this.userId = response.userId;
+            this.router.navigate(["/"]);
+          }
+        },
+        (error) => {
+          this.authStatusListener.next(false);
         }
-      });
+      );
   }
 
   logout() {
