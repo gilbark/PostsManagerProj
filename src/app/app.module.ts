@@ -1,35 +1,27 @@
-import { PostsModule } from './posts/posts.module';
+import { AuthModule } from "./auth/auth.module";
+import { PostsModule } from "./posts/posts.module";
 import { AngularMaterialModule } from "./angular-material.module";
 import { ErrorComponent } from "./error.component";
 import { ErrorInterceptor } from "./error-interceptor";
 import { AuthInterceptor } from "./auth/auth-interceptor";
-import { SignupComponent } from "./auth/signup/signup.component";
-import { LoginComponent } from "./auth/login/login.component";
 import { HeaderComponent } from "./header/header.component";
 import { BrowserModule } from "@angular/platform-browser";
 import { NgModule } from "@angular/core";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
-import { FormsModule } from "@angular/forms";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    HeaderComponent,
-    LoginComponent,
-    SignupComponent,
-    ErrorComponent,
-  ],
+  declarations: [AppComponent, HeaderComponent, ErrorComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    FormsModule,
     BrowserAnimationsModule,
     HttpClientModule,
     AngularMaterialModule,
-    PostsModule
+    PostsModule,
+    AuthModule,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
